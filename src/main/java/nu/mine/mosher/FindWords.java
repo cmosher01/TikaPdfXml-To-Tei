@@ -27,6 +27,7 @@ public class FindWords {
     }
 
     public static boolean isWords(final String s) {
+
         int cNonSpace = 0;
         int cAlphaNum = 0;
         for(int c : s.codePoints().toArray()){
@@ -39,7 +40,9 @@ public class FindWords {
         }
 
         final float rateGood = ((float)cAlphaNum) / ((float)cNonSpace);
-        final boolean ok = MIN_GOOD_RATE <= rateGood;
+
+        // at least one alpha-numeric and too short, or high ratio of letters to symbols
+        final boolean ok = (1 <= cAlphaNum && cAlphaNum+cNonSpace <= 5) ||MIN_GOOD_RATE <= rateGood;
 
         LOG.trace("{}: {}/{} {} \"{}\"", (ok?"OK":"NG"), cAlphaNum, cNonSpace, rateGood, s);
 
