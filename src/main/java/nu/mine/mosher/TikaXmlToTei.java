@@ -17,19 +17,22 @@ import org.xml.sax.SAXException;
  */
 public class TikaXmlToTei {
     public static void main(final String... args) throws ParserConfigurationException, IOException, SAXException {
-        if (args.length != 5) {
-            System.out.println("usage: java TikaXmlToTei FILE.xml 'link-format' first-page-number conf.properties encodingDesc.xml");
+        if (args.length != 6) {
+            System.out.println("usage: java TikaXmlToTei FILE.xml 'link-format' first-page-number conf.properties encodingDesc.xml image-link-format");
             return;
         }
         final File xmlFile = new File(args[0]);
         final String formatLink = args[1];
         final int firstPage = Integer.parseInt(args[2]);
         final Properties props = new Properties();
-        props.load(new FileInputStream(new File(args[3])));
+        props.load(new FileInputStream(args[3]));
         final String encDesc = new String(Files.readAllBytes(Paths.get(args[4])));
+        final String formatLink2 = args[5];
 
         String title = "";
         final List<List<String>> pages = new ArrayList<>();
+
+        boolean isOcr = false;
 
         final DocumentBuilderFactory factoryBuilder = DocumentBuilderFactory.newInstance();
         factoryBuilder.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
@@ -39,32 +42,28 @@ public class TikaXmlToTei {
         final NodeList childrenOfRoot = root.getChildNodes();
         for (int i = 0; i < childrenOfRoot.getLength(); ++i) {
             final Node childOfRoot = childrenOfRoot.item(i);
-            if (childOfRoot
-                .getNodeName()
-                .equals("body")) {
+            if (childOfRoot.getNodeName().equals("body")) {
                 final Node body = childOfRoot;
                 final NodeList childrenOfBody = body.getChildNodes();
                 for (int j = 0; j < childrenOfBody.getLength(); ++j) {
                     final Node childOfBody = childrenOfBody.item(j);
-                    if (childOfBody
-                        .getNodeName()
-                        .equals("div")) {
+                    if (childOfBody.getNodeName().equals("div")) {
                         final Node div = childOfBody;
                         boolean isPage = false;
                         final NamedNodeMap attributes = div.getAttributes();
                         for (int a = 0; a < attributes.getLength(); ++a) {
                             final Attr attribute = (Attr) attributes.item(a);
-                            if (attribute
-                                .getName()
-                                .equals("class") &&
-                                attribute
-                                    .getValue()
-                                    .equals("page")) {
+                            if (attribute.getName().equals("class") && attribute.getValue().equals("page")) {
                                 isPage = true;
+                            }
+                            if (attribute.getName().equals("class") && attribute.getValue().equals("ocr")) {
+                                isOcr = true;
                             }
                         }
                         if (isPage) {
                             pages.add(buildPage(div));
+                        } else if (isOcr) {
+                            pages.add(buildOcrPage(div));
                         }
                     }
                 }
@@ -98,7 +97,7 @@ public class TikaXmlToTei {
 
         title = title.replaceAll("_"," ").replaceAll("\\.pdf","");
 
-        printTei(pages, formatLink, firstPage, title, props, encDesc);
+        printTei(pages, isOcr ? formatLink2 : formatLink, firstPage, title, props, encDesc);
 
         System.out.flush();
         System.err.flush();
@@ -193,21 +192,31 @@ public class TikaXmlToTei {
         final NodeList paragraphs = div.getChildNodes();
         for (int i = 0; i < paragraphs.getLength(); ++i) {
             final Node paragraph = paragraphs.item(i);
-            final String text = paragraph.getTextContent();
-            if (!text.isEmpty() && FindWords.isWords(text)) {
-                try (final BufferedReader reader = new BufferedReader(new StringReader(text))) {
-                    for (String line = reader.readLine(); Objects.nonNull(line); line = reader.readLine()) {
-                        if (!line.isEmpty()) {
-                            lines.add(line);
-                        }
-                    }
-                } catch (IOException cantHappen) {
-                    throw new IllegalStateException(cantHappen);
-                }
-            }
+            addTextLines(paragraph, lines);
         }
 
         return filterRotated(lines);
+    }
+
+    private static ArrayList<String> buildOcrPage(final Node node) {
+        final ArrayList<String> lines = new ArrayList<>();
+        addTextLines(node, lines);
+        return filterRotated(lines);
+    }
+
+    private static void addTextLines(final Node readFrom, final Collection<String> addTo) {
+        final String text = readFrom.getTextContent();
+        if (!text.isEmpty() && FindWords.isWords(text)) {
+            try (final BufferedReader reader = new BufferedReader(new StringReader(text))) {
+                for (String line = reader.readLine(); Objects.nonNull(line); line = reader.readLine()) {
+                    if (!line.isEmpty()) {
+                        addTo.add(line);
+                    }
+                }
+            } catch (IOException cantHappen) {
+                throw new IllegalStateException(cantHappen);
+            }
+        }
     }
 
     /**

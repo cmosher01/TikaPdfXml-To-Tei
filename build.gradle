@@ -1,19 +1,27 @@
-repositories {
-    mavenCentral()
-    jcenter()
+plugins {
+    id 'application'
 }
 
-apply plugin: 'java'
-apply plugin: 'application'
+version = '1.0.0-SNAPSHOT'
+
+group = 'nu.mine.mosher'
+
+repositories {
+    mavenCentral()
+}
 
 dependencies {
-    implementation group: 'nu.mine.mosher.xml', name: 'fragment-xml', version: 'latest.integration'
+    implementation group: 'com.google.guava', name: 'guava', version: 'latest.release'
     implementation group: 'org.slf4j', name: 'slf4j-api', version: 'latest.release'
-
     runtimeOnly group: 'org.slf4j', name: 'slf4j-simple', version: 'latest.release'
 }
 
-group = 'nu.mine.mosher'
-version = '1.0.0-SNAPSHOT'
-mainClassName = 'nu.mine.mosher.TikaXmlToTei'
-sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_9
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of 17
+    }
+}
+
+application {
+    mainClass.set 'nu.mine.mosher.TikaXmlToTei'
+}
