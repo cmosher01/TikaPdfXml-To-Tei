@@ -40,46 +40,10 @@ public class XmlUtils {
 
     public static Document doc() {
         try {
-            return factory().newDocumentBuilder().newDocument();
+            return DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
         } catch (ParserConfigurationException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public static DocumentBuilderFactory factory() {
-        final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-
-//        factory.setValidating(false);
-//
-//        factory.setNamespaceAware(false);
-//        factory.setExpandEntityReferences(true);
-//        factory.setCoalescing(true);
-//        factory.setIgnoringElementContentWhitespace(false);
-//        factory.setIgnoringComments(false);
-//
-//        factory.setFeature("http://apache.org/xml/features/honour-all-schemaLocations", true);
-//        factory.setFeature("http://apache.org/xml/features/warn-on-duplicate-entitydef", true);
-//        factory.setFeature("http://apache.org/xml/features/standard-uri-conformant", true);
-//        factory.setFeature("http://apache.org/xml/features/xinclude", true);
-//        factory.setFeature("http://apache.org/xml/features/validate-annotations", true);
-//        factory.setFeature("http://apache.org/xml/features/validation/schema-full-checking", true);
-//        factory.setFeature("http://apache.org/xml/features/validation/warn-on-duplicate-attdef", true);
-//        factory.setFeature("http://apache.org/xml/features/validation/warn-on-undeclared-elemdef", true);
-//        factory.setFeature("http://apache.org/xml/features/dom/defer-node-expansion", false);
-
-        //These options often crash Xerces (as of 2.12.0):
-        //factory.setFeature("http://apache.org/xml/features/scanner/notify-char-refs", true);
-        //factory.setFeature("http://apache.org/xml/features/scanner/notify-builtin-refs", true);
-
-//        factory.setAttribute("http://java.sun.com/xml/jaxp/properties/schemaLanguage", XMLConstants.W3C_XML_SCHEMA_NS_URI);
-
-//        if (!schemas.isEmpty()) {
-//            factory.setAttribute(
-//                "http://java.sun.com/xml/jaxp/properties/schemaSource",
-//                schemas.stream().sequential().map(URL::toExternalForm).toArray(String[]::new));
-//        }
-
-        return factory;
     }
 
     public static void serialize(final Node dom, final BufferedOutputStream to, final boolean pretty, final boolean xmldecl) throws IOException, TransformerException {
