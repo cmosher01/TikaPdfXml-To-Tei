@@ -1,17 +1,21 @@
 plugins {
+    id "io.freefair.lombok" version "6.5.1"
     id 'application'
 }
 
-version = '1.0.0-SNAPSHOT'
+version = '2.0.0-SNAPSHOT'
 
-group = 'nu.mine.mosher'
+group = 'nu.mine.mosher.tei'
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    implementation group: 'com.google.guava', name: 'guava', version: 'latest.release'
+    runtimeOnly group: 'xerces', name: 'xercesImpl', version: 'latest.release', {
+        exclude group: 'xml-apis'
+    }
+
     implementation group: 'org.slf4j', name: 'slf4j-api', version: 'latest.release'
     runtimeOnly group: 'org.slf4j', name: 'slf4j-simple', version: 'latest.release'
 }
@@ -23,5 +27,5 @@ java {
 }
 
 application {
-    mainClass.set 'nu.mine.mosher.TikaXmlToTei'
+    mainClass = 'nu.mine.mosher.tei.TeiDoc'
 }

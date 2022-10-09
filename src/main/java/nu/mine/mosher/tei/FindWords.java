@@ -1,21 +1,13 @@
-package nu.mine.mosher;
+package nu.mine.mosher.tei;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+@Slf4j
 public class FindWords {
-    static {
-//        System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "trace");
-//        System.setProperty("org.slf4j.simpleLogger.showDateTime", "true");
-//        System.setProperty("org.slf4j.simpleLogger.dateTimeFormat", "yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-        LOG = LoggerFactory.getLogger(FindWords.class);
-    }
-
-    private static final Logger LOG;
     private static final float MIN_GOOD_RATE = 2f/3f;
 
     public static void main(final String... args) throws IOException {
@@ -44,7 +36,7 @@ public class FindWords {
         // at least one alpha-numeric and too short, or high ratio of letters to symbols
         final boolean ok = (1 <= cAlphaNum && cAlphaNum+cNonSpace <= 5) ||MIN_GOOD_RATE <= rateGood;
 
-        LOG.trace("{}: {}/{} {} \"{}\"", (ok?"OK":"NG"), cAlphaNum, cNonSpace, rateGood, s);
+        log.trace("{}: {}/{} {} \"{}\"", (ok?"OK":"NG"), cAlphaNum, cNonSpace, rateGood, s);
 
         return ok;
     }

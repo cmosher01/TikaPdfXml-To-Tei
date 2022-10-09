@@ -1,3 +1,0 @@
-#!/bin/sh
-scanimage -d 'fujitsu:ScanSnap iX500:1637946' --format tiff -p -v --mode color --batch
-

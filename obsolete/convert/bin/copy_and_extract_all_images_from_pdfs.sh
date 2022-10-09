@@ -1,6 +1,6 @@
 #!/bin/sh
 
-here=$(dirname $(readlink -f $0))
+here=$(dirname "$(readlink -f $0)")
 
 srcdir=$(readlink -f ./)
 echo "Extracts all images from: $srcdir"
@@ -10,7 +10,7 @@ echo "Prepares them for IIPImage Server at: $dstdir"
 
 if [ "$1" != "-f" ] ; then
     echo "usage: $0 -f"
-    exit 0
+    exit 1
 fi
 
 # mirror directory tree structure (without files)

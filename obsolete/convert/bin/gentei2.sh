@@ -4,7 +4,7 @@ if [ ! "$3" ] ; then
     exit 1
 fi
 
-here=$(dirname $(readlink -f $0))
+here=$(dirname "$(readlink -f $0)")
 
 pth="$1"
 echo "$pth"
@@ -20,5 +20,5 @@ echo "$dst_fil"
 dir_nam="$(dirname $dst_fil)"
 
 mkdir -p "$dir_nam"
-../tikapdfxml-to-tei/bin/tikapdfxml-to-tei "$src_pth" "$lnk_url" 0 $here/teiHeader.properties $here/encodingDesc_fragment.xml "$lnk2_url" | xmllint --format - >"$dst_fil"
+../tikapdfxml-to-tei/bin/tikapdfxml-to-tei "$src_pth" "$lnk_url" "0" "$here/teiHeader.properties" "$lnk2_url" >"$dst_fil"
 echo "=============="

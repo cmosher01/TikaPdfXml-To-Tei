@@ -1,6 +1,6 @@
 #!/bin/sh
 
-here=$(dirname $(readlink -f $0))
+here=$(dirname "$(readlink -f $0)")
 
 srcdir=$(readlink -f ./)
 echo "Based on .pdf,.jpg,.png files in this tree: $srcdir"
@@ -12,7 +12,7 @@ echo "Generates TEI files at: $dstdir"
 
 if [ "$1" != "-f" ] ; then
     echo "usage: $0 -f"
-    exit 0
+    exit 1
 fi
 
 tikdir=$(mktemp -d)

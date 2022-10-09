@@ -1,20 +1,27 @@
 # TikaPdfXml-To-Tei
-Take a Tika-generated XML file from a PDF, and format it as a TEI file,
-with the extracted text, and links to extracted images.
 
-After building java program, extract into the `convert` directory.
-Put PDF, JPG, and/or PNG files into target directory
-structure under `convert/src_pdf_jpg_png/`
+[This doesn't use Tika anymore, so the name doesn't make sense.]
+
+Uses a series of images of documents (optionally scanning
+them in) to generate two digital artifacts using OCR:
+
+1. a searchable PDF document; and,
+1. a TEI document, with references to ptif files.
+
+## running
+
+Requirements: bash, java 17, scanimage, vips, imagemagick, tesseract.
+
+Edit the `bin/teiHeader.properties` file with your own custom
+settings (author, copyright, etc.).
+Build the java program and extract the distribution.
+Turn on your scanner and insert the physical documents.
+Run the `bin/teidoc.sh` shell script.
 
 ```shell
 $ ./gradlew build
-$ cd convert
-$ mkdir -p tikapdfxml-to-tei
-$ cd tikapdfxml-to-tei
-$ tar -x -f ../../build/distributions/tikapdfxml-to-tei-*.tar --strip-components=1
-$ cd ..
-$ ./convert.sh
+$ unzip build/distributions/tikapdfxml-to-tei-VERSION.zip
+$ ./bin/teidoc.sh title_of_output_document -s
 ```
 
-Final output will be in two `/tmp` directories, one for TEI files,
-one for PTIF files.
+Final output will be in a `/tmp` directory.
