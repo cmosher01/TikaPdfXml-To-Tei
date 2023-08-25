@@ -1,5 +1,7 @@
 #!/bin/bash
 
+#optcvt="-resize 25% -verbose -alpha flatten -density 300 -compress jpeg -quality 35 -sampling-factor 4:2:0 -type TrueColor -interlace plane -define jpeg:dct-method=float -strip"
+#optcvt="-resize 50% -verbose -alpha flatten -density 300 -compress jpeg -quality 35 -sampling-factor 4:2:0 -type TrueColor -interlace plane -define jpeg:dct-method=float -strip"
 optcvt="-verbose -alpha flatten -density 300 -compress jpeg -quality 35 -sampling-factor 4:2:0 -type TrueColor -interlace plane -define jpeg:dct-method=float -strip"
 optvip="tiffsave --vips-progress --tile --pyramid --compression jpeg --tile-width 256 --tile-height 256"
 
@@ -63,7 +65,7 @@ cd $workdir || exit 1
 
 echo "==========================="
 # OCR to create pdf with jpg and text
-find jpg -type f | tesseract - $title pdf txt
+find jpg -type f | sort | tesseract - $title pdf txt
 mv -nv $title.pdf pdf/
 mv -nv $title.txt txt/
 
